@@ -48,6 +48,24 @@ public class AuthorController {
     }
 
 
+    @PutMapping("/authors/{id}")
+    public ResponseEntity<Object> updateCategory(@PathVariable int id, @Valid @RequestBody Author author) throws NotFoundException {
+        Optional<Author> authorOpt = authorRepo.findById(id);
+        if (!authorOpt.isPresent())
+            throw new NotFoundException("Author id " + id + " is not existed.");
+
+        author.setId(id);
+        Author savedAuthor = authorRepo.save(author);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedAuthor.getId()).toUri();
+
+        return ResponseEntity.created(location).build();
+    }
+
+
     @DeleteMapping("/authors/{id}")
     public void deleteAuthor(@PathVariable int id) throws NotFoundException {
 
