@@ -19,11 +19,11 @@ public class Book {
     @Size(max=1000, message="Description should have at most 1000 characters")
     private String description;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="author_id")
     private Author author;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="category_id")
     private Category category;
 
