@@ -1,5 +1,7 @@
 package com.hsinpingweng.library.librarymanagementsystemrestful.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.Set;
@@ -16,6 +18,7 @@ public class Category {
     private String name;
 
     @OneToMany(mappedBy="category")
+    @JsonIgnore
     private Set<Book> books;
 
     protected Category() { }
