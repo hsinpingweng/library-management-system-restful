@@ -12,4 +12,6 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
 
     Set<Book> findByCategory_Id(int categoryId);
 
+    Set<Book> findByAuthor_Id(int authorId);
+
 }

@@ -37,8 +37,16 @@ public class BookController {
 
 
     @GetMapping("/books/categories/{categoryId}")
-    public Set<Book> retrieveBooksByCategory (@PathVariable int categoryId) {
+    public Set<Book> retrieveBooksByCategoryId (@PathVariable int categoryId) {
         Set<Book> books = bookRepo.findByCategory_Id(categoryId);
+
+        return books;
+    }
+
+
+    @GetMapping("/books/authors/{authorId}")
+    public Set<Book> retrieveBooksByAuthorId (@PathVariable int authorId) {
+        Set<Book> books = bookRepo.findByAuthor_Id(authorId);
 
         return books;
     }
