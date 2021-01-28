@@ -34,6 +34,8 @@ public class BookController {
                                      @RequestParam(value = "category-id", required = false) Integer categoryId,
                                      @RequestParam(value = "author-id", required = false) Integer authorId,
                                      @RequestParam(value = "publisher-id", required = false) Integer publisherId){
+
+        //TODO : error handling
         return bookService.findAll(id, isbn, name, publishedDate, categoryId, authorId, publisherId);
     }
 
