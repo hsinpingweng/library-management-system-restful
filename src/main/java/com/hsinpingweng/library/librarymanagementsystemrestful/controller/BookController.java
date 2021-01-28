@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 public class BookController {
@@ -32,6 +33,14 @@ public class BookController {
             throw new NotFoundException("Book id " + id + " is not existed.");
 
         return book.get();
+    }
+
+
+    @GetMapping("/books/categories/{categoryId}")
+    public Set<Book> retrieveBooksByCategory (@PathVariable int categoryId) {
+        Set<Book> books = bookRepo.findByCategory_Id(categoryId);
+
+        return books;
     }
 
 
