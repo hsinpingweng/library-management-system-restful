@@ -1,6 +1,7 @@
 package com.hsinpingweng.library.librarymanagementsystemrestful.controller;
 
 
+import com.hsinpingweng.library.librarymanagementsystemrestful.entity.Book;
 import com.hsinpingweng.library.librarymanagementsystemrestful.entity.Category;
 import com.hsinpingweng.library.librarymanagementsystemrestful.repository.CategoryRepository;
 import javassist.NotFoundException;
@@ -13,6 +14,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 public class CategoryController {
@@ -32,6 +34,16 @@ public class CategoryController {
             throw new NotFoundException("Category id " + id + " is not existed.");
 
         return category.get();
+    }
+
+
+    @GetMapping("/categories/{id}/books")
+    public Set<Book> retrieveBooksByCategory (@PathVariable int id) throws NotFoundException {
+        Optional<Category> category = categoryRepo.findById(id);
+        if (!category.isPresent())
+            throw new NotFoundException("Category id " + id + " is not existed.");
+
+        return category.get().getBooks();
     }
 
 
