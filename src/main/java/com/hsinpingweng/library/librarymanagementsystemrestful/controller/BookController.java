@@ -3,6 +3,7 @@ package com.hsinpingweng.library.librarymanagementsystemrestful.controller;
 
 import com.hsinpingweng.library.librarymanagementsystemrestful.entity.Book;
 import com.hsinpingweng.library.librarymanagementsystemrestful.repository.BookRepository;
+import com.hsinpingweng.library.librarymanagementsystemrestful.service.BookService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +12,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @RestController
 public class BookController {
@@ -21,50 +22,21 @@ public class BookController {
     @Autowired
     private BookRepository bookRepo;
 
+    @Autowired
+    private BookService bookService;
+
+
     @GetMapping("/books")
-    public List<Book> retrieveAllBooks (){
-        return bookRepo.findAll();
+    public List<Book> retrieveBooks (@RequestParam(value = "id", required = false)Integer id,
+                                     @RequestParam(value = "isbn", required = false)String isbn,
+                                     @RequestParam(value = "name", required = false)String name,
+                                     @RequestParam(value = "publishedDate", required = false)Date publishedDate,
+                                     @RequestParam(value = "categoryId", required = false) Integer categoryId,
+                                     @RequestParam(value = "authorId", required = false) Integer authorId,
+                                     @RequestParam(value = "publisherId", required = false) Integer publisherId){
+        return bookService.findAll(id, isbn, name, publishedDate, categoryId, authorId, publisherId);
     }
 
-    @GetMapping("/books/{id}")
-    public Book retrieveBook (@PathVariable int id) throws NotFoundException {
-        Optional<Book> book = bookRepo.findById(id);
-        if (!book.isPresent())
-            throw new NotFoundException("Book id " + id + " is not existed.");
-
-        return book.get();
-    }
-
-
-    @GetMapping("/books/categories/{categoryId}")
-    public Set<Book> retrieveBooksByCategoryId (@PathVariable int categoryId) {
-        Set<Book> books = bookRepo.findByCategory_Id(categoryId);
-
-        return books;
-    }
-
-
-    @GetMapping("/books/authors/{authorId}")
-    public Set<Book> retrieveBooksByAuthorId (@PathVariable int authorId) {
-        Set<Book> books = bookRepo.findByAuthor_Id(authorId);
-
-        return books;
-    }
-
-    @GetMapping("/books/publishers/{publisherId}")
-    public Set<Book> retrieveBooksByPublisherId (@PathVariable int publisherId) {
-        Set<Book> books = bookRepo.findByPublisher_Id(publisherId);
-
-        return books;
-    }
-
-
-    @GetMapping("/books/categories/{categoryId}/authors/{authorId}")
-    public Set<Book> retrieveBooksByCategoryIdAndAuthorId (@PathVariable int categoryId, @PathVariable int authorId) {
-        Set<Book> books = bookRepo.findByCategory_IdAndAuthor_Id(categoryId, authorId);
-
-        return books;
-    }
 
 
     @PostMapping("/books")
