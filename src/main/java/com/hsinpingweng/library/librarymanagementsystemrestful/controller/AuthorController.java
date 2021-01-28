@@ -1,6 +1,7 @@
 package com.hsinpingweng.library.librarymanagementsystemrestful.controller;
 
 import com.hsinpingweng.library.librarymanagementsystemrestful.entity.Author;
+import com.hsinpingweng.library.librarymanagementsystemrestful.entity.Book;
 import com.hsinpingweng.library.librarymanagementsystemrestful.repository.AuthorRepository;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 public class AuthorController {
@@ -32,6 +34,16 @@ public class AuthorController {
             throw new NotFoundException("Author id " + id + " is not existed.");
 
         return author.get();
+    }
+
+
+    @GetMapping("/authors/{id}/books")
+    public Set<Book> retrieveBooksByAuthor(@PathVariable int id) throws NotFoundException {
+        Optional<Author> author = authorRepo.findById(id);
+        if (!author.isPresent())
+            throw new NotFoundException("Author id " + id + " is not existed.");
+
+        return author.get().getBooks();
     }
 
 
