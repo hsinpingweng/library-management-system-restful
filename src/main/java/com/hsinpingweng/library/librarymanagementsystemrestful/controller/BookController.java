@@ -52,6 +52,14 @@ public class BookController {
     }
 
 
+    @GetMapping("/books/categories/{categoryId}/authors/{authorId}")
+    public Set<Book> retrieveBooksByCategoryIdAndAuthorId (@PathVariable int categoryId, @PathVariable int authorId) {
+        Set<Book> books = bookRepo.findByCategory_IdAndAuthor_Id(categoryId, authorId);
+
+        return books;
+    }
+
+
     @PostMapping("/books")
     public ResponseEntity<Object> createBook(@Valid @RequestBody Book book) {
         Book savedBook = bookRepo.save(book);
