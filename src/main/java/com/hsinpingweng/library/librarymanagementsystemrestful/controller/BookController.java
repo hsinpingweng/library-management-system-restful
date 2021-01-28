@@ -30,10 +30,10 @@ public class BookController {
     public List<Book> retrieveBooks (@RequestParam(value = "id", required = false)Integer id,
                                      @RequestParam(value = "isbn", required = false)String isbn,
                                      @RequestParam(value = "name", required = false)String name,
-                                     @RequestParam(value = "publishedDate", required = false)Date publishedDate,
-                                     @RequestParam(value = "categoryId", required = false) Integer categoryId,
-                                     @RequestParam(value = "authorId", required = false) Integer authorId,
-                                     @RequestParam(value = "publisherId", required = false) Integer publisherId){
+                                     @RequestParam(value = "published-date", required = false)Date publishedDate,
+                                     @RequestParam(value = "category-id", required = false) Integer categoryId,
+                                     @RequestParam(value = "author-id", required = false) Integer authorId,
+                                     @RequestParam(value = "publisher-id", required = false) Integer publisherId){
         return bookService.findAll(id, isbn, name, publishedDate, categoryId, authorId, publisherId);
     }
 
