@@ -27,6 +27,10 @@ public class Book {
     @JoinColumn(name="category_id")
     private Category category;
 
+    @ManyToOne
+    @JoinColumn(name="publisher_id")
+    private Publisher publisher;
+
     protected Book() { }
 
     public Book(String isbn,
@@ -86,4 +90,11 @@ public class Book {
         this.category = category;
     }
 
+    public Publisher getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(Publisher publisher) {
+        this.publisher = publisher;
+    }
 }

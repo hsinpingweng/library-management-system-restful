@@ -1,6 +1,20 @@
-insert into category (name) values('Romance');
 insert into category (name) values('Fiction');
-insert into author (name, description) values('Tom', 'best writer');
-insert into author (name, description) values('Tat', 'Taiwanese writer');
-insert into book (name, description, isbn, author_id, category_id) values('Book A', 'Description A', '0000000000000', 1, 1);
-insert into book (name, description, isbn, author_id, category_id) values('Book B', 'Description B', '1111111111111', 2, 2);
+insert into category (name) values('Crime');
+insert into category (name) values('Romance');
+insert into category (name) values('Children');
+insert into category (name) values('Teen');
+
+insert into publisher (name) values('Atlantic');
+insert into publisher (name) values('Vintage');
+insert into publisher (name) values('Harper');
+insert into publisher (name) values('Simon & Schuster Childrens UK');
+
+insert into author (name, description) values('Sam Blake', 'best writer');
+insert into author (name, description) values('Billy OCallaghan', 'best writer');
+insert into author (name, description) values('Sophy Henn', 'best writer');
+
+insert into book (name, description, isbn, author_id, category_id, publisher_id) values('Keep Your Eyes On Me', 'NUMBER ONE IRISH TIMES BESTSELLER', '9781786498380', 1, 2, 1);
+insert into book (name, description, isbn, author_id, category_id, publisher_id) values('The Dark Room', 'NUMBER ONE IRISH TIMES BESTSELLER', '9781786498601', 1, 2, 1);
+insert into book (name, description, isbn, author_id, category_id, publisher_id) values('Thw Boatman And Other Stories', 'The breathtaking short story collection from the Costa-shortlisted Irish writer Three gunshots on the Irish border define the course of a young mans life', '9781784708757', 2, 1, 2);
+insert into book (name, description, isbn, author_id, category_id, publisher_id) values('MY CONEY ISLAND BABY', 'A poignant, piercing meditation on middle age and the passing of time. will linger with you long after the book is closed', '9780062856562', 2, 1, 3);
+insert into book (name, description, isbn, author_id, category_id, publisher_id) values('Pizazz vs the New Kid: The super awesome new superhero series! (Volume 2)', 'The super (like, actually, with powers and stuff) series from the amazingly talented Sophy Henn, award-winning author and illustrator of Bad Nana! ', '9781471194153', 3, 4, 4);
