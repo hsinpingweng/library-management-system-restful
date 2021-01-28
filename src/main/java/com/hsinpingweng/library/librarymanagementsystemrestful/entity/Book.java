@@ -1,7 +1,11 @@
 package com.hsinpingweng.library.librarymanagementsystemrestful.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 @Entity
 public class Book {
@@ -19,6 +23,11 @@ public class Book {
     @Size(max=1000, message="Description should have at most 1000 characters")
     private String description;
 
+    @Column(name = "published_date")
+    @DateTimeFormat(pattern="dd-MM-yyyy")
+    @JsonFormat(pattern="dd-MM-yyyy")
+    private Date publishedDate;
+
     @ManyToOne
     @JoinColumn(name="author_id")
     private Author author;
@@ -27,15 +36,21 @@ public class Book {
     @JoinColumn(name="category_id")
     private Category category;
 
+    @ManyToOne
+    @JoinColumn(name="publisher_id")
+    private Publisher publisher;
+
     protected Book() { }
 
     public Book(String isbn,
                 String name,
-                String description) {
+                String description,
+                Date publishedDate) {
 
         this.isbn = isbn;
         this.name = name;
         this.description = description;
+        this.publishedDate = publishedDate;
     }
 
     public Integer getId() {
@@ -86,4 +101,19 @@ public class Book {
         this.category = category;
     }
 
+    public Publisher getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(Publisher publisher) {
+        this.publisher = publisher;
+    }
+
+    public Date getPublishedDate() {
+        return publishedDate;
+    }
+
+    public void setPublishedDate(Date publishedDate) {
+        this.publishedDate = publishedDate;
+    }
 }
