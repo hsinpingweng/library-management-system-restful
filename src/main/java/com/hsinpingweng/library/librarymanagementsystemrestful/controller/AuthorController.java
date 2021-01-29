@@ -39,7 +39,7 @@ public class AuthorController {
 
     @ApiOperation(value="Retrieve author by id")
     @ApiResponses({
-            @ApiResponse(responseCode="200", description="Successfully retrieve all authors"),
+            @ApiResponse(responseCode="200", description="Successfully retrieve a author"),
             @ApiResponse(responseCode="404", description="Author id is not existed")
     })
     @GetMapping("/authors/{id}")

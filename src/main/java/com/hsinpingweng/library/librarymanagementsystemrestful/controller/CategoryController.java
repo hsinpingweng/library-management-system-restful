@@ -4,6 +4,10 @@ package com.hsinpingweng.library.librarymanagementsystemrestful.controller;
 import com.hsinpingweng.library.librarymanagementsystemrestful.entity.Book;
 import com.hsinpingweng.library.librarymanagementsystemrestful.entity.Category;
 import com.hsinpingweng.library.librarymanagementsystemrestful.repository.CategoryRepository;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +26,24 @@ public class CategoryController {
     @Autowired
     private CategoryRepository categoryRepo;
 
+
+    @ApiOperation(value="Retrieve all categories")
+    @ApiResponses({
+            @ApiResponse(responseCode="200", description="Successfully retrieve all categories")
+    })
     @GetMapping("/categories")
     public List<Category> retrieveAllCategories (){
         return categoryRepo.findAll();
     }
 
+
+    @ApiOperation(value="Retrieve category by id")
+    @ApiResponses({
+            @ApiResponse(responseCode="200", description="Successfully get the category"),
+            @ApiResponse(responseCode="404", description="Category id is not existed")
+    })
     @GetMapping("/categories/{id}")
-    public Category retrieveCategory (@PathVariable int id) throws NotFoundException {
+    public Category retrieveCategory (@ApiParam("Category id") @PathVariable int id) throws NotFoundException {
         Optional<Category> category = categoryRepo.findById(id);
         if (!category.isPresent())
             throw new NotFoundException("Category id " + id + " is not existed.");
@@ -37,8 +52,13 @@ public class CategoryController {
     }
 
 
+    @ApiOperation(value="List books belongs to the category id")
+    @ApiResponses({
+            @ApiResponse(responseCode="200", description="Successfully retrieve all books by category id"),
+            @ApiResponse(responseCode="404", description="category id is not existed")
+    })
     @GetMapping("/categories/{id}/books")
-    public Set<Book> retrieveBooksByCategory (@PathVariable int id) throws NotFoundException {
+    public Set<Book> retrieveBooksByCategory (@ApiParam("Category id") @PathVariable int id) throws NotFoundException {
         Optional<Category> category = categoryRepo.findById(id);
         if (!category.isPresent())
             throw new NotFoundException("Category id " + id + " is not existed.");
@@ -47,8 +67,13 @@ public class CategoryController {
     }
 
 
+    @ApiOperation(value="Update category")
+    @ApiResponses({
+            @ApiResponse(responseCode="201", description="Successfully update a category information")
+    })
     @PutMapping("/categories/{id}")
-    public ResponseEntity<Object> updateCategory(@PathVariable int id, @Valid @RequestBody Category category) throws NotFoundException {
+    public ResponseEntity<Object> updateCategory(@ApiParam("Category id") @PathVariable int id,
+                                                 @Valid @RequestBody Category category) throws NotFoundException {
         Optional<Category> categoryOpt = categoryRepo.findById(id);
         if (!categoryOpt.isPresent())
             throw new NotFoundException("Category id " + id + " is not existed.");
@@ -65,6 +90,10 @@ public class CategoryController {
     }
 
 
+    @ApiOperation(value="Create a category")
+    @ApiResponses({
+            @ApiResponse(responseCode="201", description="Successfully create a category")
+    })
     @PostMapping("/categories")
     public ResponseEntity<Object> createCategory(@Valid @RequestBody Category category) {
         Category savedCategory = categoryRepo.save(category);
@@ -78,8 +107,12 @@ public class CategoryController {
     }
 
 
+    @ApiOperation(value="Delete a category")
+    @ApiResponses({
+            @ApiResponse(responseCode="200", description="Successfully delete a category by id")
+    })
     @DeleteMapping("/categories/{id}")
-    public void deleteCategory(@PathVariable int id) throws NotFoundException {
+    public void deleteCategory(@ApiParam("Category id") @PathVariable int id) throws NotFoundException {
 
         Optional<Category> category = categoryRepo.findById(id);
         if (!category.isPresent())
