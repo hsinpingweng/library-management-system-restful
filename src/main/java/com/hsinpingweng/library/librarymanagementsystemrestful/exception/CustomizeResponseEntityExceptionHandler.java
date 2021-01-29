@@ -30,6 +30,4 @@ public class CustomizeResponseEntityExceptionHandler
 		
 		return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
 	}
-
-
 }

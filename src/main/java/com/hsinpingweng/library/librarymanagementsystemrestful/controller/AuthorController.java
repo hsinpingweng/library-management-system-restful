@@ -6,6 +6,7 @@ import com.hsinpingweng.library.librarymanagementsystemrestful.repository.Author
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -79,11 +80,12 @@ public class AuthorController {
 
 
     @DeleteMapping("/authors/{id}")
-    public void deleteAuthor(@PathVariable int id) throws NotFoundException {
+    public void deleteAuthor(@PathVariable int id) throws NotFoundException, MethodArgumentNotValidException {
 
-        Optional<Author> author = authorRepo.findById(id);
-        if (!author.isPresent())
+        Optional<Author> authorOpt = authorRepo.findById(id);
+        if (!authorOpt.isPresent())
             throw new NotFoundException("Author id " + id + " is not existed.");
+
 
         //TODO - handle constraint violation exception
         authorRepo.deleteById(id);

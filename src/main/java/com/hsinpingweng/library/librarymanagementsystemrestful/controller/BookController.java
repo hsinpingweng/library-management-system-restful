@@ -80,7 +80,6 @@ public class BookController {
         if (!book.isPresent())
             throw new NotFoundException("Book id " + id + " is not existed.");
 
-        //TODO - handle constraint violation exception
         bookRepo.deleteById(id);
     }
 
