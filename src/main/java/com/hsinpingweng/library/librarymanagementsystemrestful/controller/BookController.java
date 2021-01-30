@@ -114,6 +114,21 @@ public class BookController {
         if (!bookOpt.isPresent())
             throw new CustomNotFoundException("Book id " + id + " is not existed.");
 
+        Integer authorId = book.getAuthor().getId();
+        Optional<Author> author = authorRepo.findById(authorId);
+        if (!author.isPresent())
+            throw new CustomNotFoundException("Author id " + authorId + " is not existed.");
+
+        Integer categoryId = book.getCategory().getId();
+        Optional<Category> category = categoryRepo.findById(categoryId);
+        if (!category.isPresent())
+            throw new CustomNotFoundException("Category id " + categoryId + " is not existed.");
+
+        Integer publisherId = book.getPublisher().getId();
+        Optional<Publisher> publisher = publisherRepo.findById(publisherId);
+        if (!publisher.isPresent())
+            throw new CustomNotFoundException("Publisher id " + publisherId + " is not existed.");
+
         book.setId(id);
         Book savedBook = bookRepo.save(book);
 

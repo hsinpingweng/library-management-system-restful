@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -110,14 +111,15 @@ public class AuthorController {
             @ApiResponse(responseCode="200", description="Successfully delete a author by id")
     })
     @DeleteMapping("/authors/{id}")
-    public void deleteAuthor(@PathVariable int id) throws CustomNotFoundException {
+    public void deleteAuthor(@PathVariable int id) throws CustomNotFoundException, ConstraintViolationException {
 
         Optional<Author> authorOpt = authorRepo.findById(id);
         if (!authorOpt.isPresent())
             throw new CustomNotFoundException("Author id " + id + " is not existed.");
 
+        if (!authorOpt.get().getBooks().isEmpty())
+            throw new ConstraintViolationException("Can not delete Author id " + id + ", still have some books belong to this author", null, "id");
 
-        //TODO - handle constraint violation exception
         authorRepo.deleteById(id);
     }
 

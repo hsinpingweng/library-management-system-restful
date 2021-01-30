@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -112,13 +113,15 @@ public class CategoryController {
             @ApiResponse(responseCode="200", description="Successfully delete a category by id")
     })
     @DeleteMapping("/categories/{id}")
-    public void deleteCategory(@ApiParam("Category id") @PathVariable int id) throws CustomNotFoundException {
+    public void deleteCategory(@ApiParam("Category id") @PathVariable int id) throws CustomNotFoundException, ConstraintViolationException {
 
         Optional<Category> category = categoryRepo.findById(id);
         if (!category.isPresent())
             throw new CustomNotFoundException("Category id " + id + " is not existed.");
 
-        //TODO - handle constraint violation exception
+        if (!category.get().getBooks().isEmpty())
+            throw new ConstraintViolationException("Can not delete category id " + id + ", still have some books belong to this category", null, "id");
+
         categoryRepo.deleteById(id);
     }
 

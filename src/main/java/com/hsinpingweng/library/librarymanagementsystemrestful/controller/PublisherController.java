@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -112,13 +113,15 @@ public class PublisherController {
             @ApiResponse(responseCode="200", description="Successfully delete a publisher by id")
     })
     @DeleteMapping("/publishers/{id}")
-    public void deletePublisher(@ApiParam("Publisher id") @PathVariable int id) throws CustomNotFoundException {
+    public void deletePublisher(@ApiParam("Publisher id") @PathVariable int id) throws CustomNotFoundException, ConstraintViolationException {
 
         Optional<Publisher> publisherOpt = publisherRepo.findById(id);
         if (!publisherOpt.isPresent())
             throw new CustomNotFoundException("Publisher id " + id + " is not existed.");
 
-        //TODO - handle constraint violation exception
+        if (!publisherOpt.get().getBooks().isEmpty())
+            throw new ConstraintViolationException("Can not delete publisher id " + id + ", still have some books belong to this publisher", null, "id");
+
         publisherRepo.deleteById(id);
     }
 }

@@ -1,5 +1,6 @@
 package com.hsinpingweng.library.librarymanagementsystemrestful.exception;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +16,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,15 +79,7 @@ public class CustomizeResponseEntityExceptionHandler
 	public ResponseEntity<Object> handleConstraintViolation(
 			ConstraintViolationException ex, WebRequest request) {
 
-		List<String> errors = new ArrayList<>();
-		for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
-			errors.add(violation.getRootBeanClass().getName()
-					+ " "
-					+ violation.getPropertyPath()
-					+ ": " + violation.getMessage());
-		}
-
-		ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST, errors);
+		ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
 		return new ResponseEntity<>(exceptionResponse, new HttpHeaders(), exceptionResponse.getStatus());
 	}
 
