@@ -1,8 +1,15 @@
 package com.hsinpingweng.library.librarymanagementsystemrestful.controller;
 
 
+import com.hsinpingweng.library.librarymanagementsystemrestful.entity.Author;
 import com.hsinpingweng.library.librarymanagementsystemrestful.entity.Book;
+import com.hsinpingweng.library.librarymanagementsystemrestful.entity.Category;
+import com.hsinpingweng.library.librarymanagementsystemrestful.entity.Publisher;
+import com.hsinpingweng.library.librarymanagementsystemrestful.exception.CustomNotFoundException;
+import com.hsinpingweng.library.librarymanagementsystemrestful.repository.AuthorRepository;
 import com.hsinpingweng.library.librarymanagementsystemrestful.repository.BookRepository;
+import com.hsinpingweng.library.librarymanagementsystemrestful.repository.CategoryRepository;
+import com.hsinpingweng.library.librarymanagementsystemrestful.repository.PublisherRepository;
 import com.hsinpingweng.library.librarymanagementsystemrestful.service.BookService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -10,7 +17,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +36,15 @@ public class BookController {
 
     @Autowired
     private BookService bookService;
+
+    @Autowired
+    private AuthorRepository authorRepo;
+
+    @Autowired
+    private CategoryRepository categoryRepo;
+
+    @Autowired
+    private PublisherRepository publisherRepo;
 
 
     @ApiOperation(value="Retrieve Books by Query")
@@ -60,7 +75,22 @@ public class BookController {
             @ApiResponse(responseCode="201", description="Successfully create a book")
     })
     @PostMapping("/books")
-    public ResponseEntity<Object> createBook(@ApiParam(name="Book to create", value="Json format", required=true) @Valid @RequestBody  Book book) {
+    public ResponseEntity<Object> createBook(@ApiParam(name="Book to create", value="Json format", required=true) @Valid @RequestBody  Book book) throws CustomNotFoundException {
+
+        Integer authorId = book.getAuthor().getId();
+        Optional<Author> author = authorRepo.findById(authorId);
+        if (!author.isPresent())
+            throw new CustomNotFoundException("Author id " + authorId + " is not existed.");
+
+        Integer categoryId = book.getCategory().getId();
+        Optional<Category> category = categoryRepo.findById(categoryId);
+        if (!category.isPresent())
+            throw new CustomNotFoundException("Category id " + categoryId + " is not existed.");
+
+        Integer publisherId = book.getPublisher().getId();
+        Optional<Publisher> publisher = publisherRepo.findById(publisherId);
+        if (!publisher.isPresent())
+            throw new CustomNotFoundException("Publisher id " + publisherId + " is not existed.");
 
         Book savedBook = bookRepo.save(book);
 
@@ -79,10 +109,10 @@ public class BookController {
     })
     @PutMapping("/books/{id}")
     public ResponseEntity<Object> updateBook(@ApiParam("book id") @PathVariable int id,
-                                             @Valid @RequestBody Book book) throws NotFoundException {
+                                             @Valid @RequestBody Book book) throws CustomNotFoundException {
         Optional<Book> bookOpt = bookRepo.findById(id);
         if (!bookOpt.isPresent())
-            throw new NotFoundException("Book id " + id + " is not existed.");
+            throw new CustomNotFoundException("Book id " + id + " is not existed.");
 
         book.setId(id);
         Book savedBook = bookRepo.save(book);
@@ -101,11 +131,11 @@ public class BookController {
             @ApiResponse(responseCode="200", description="Successfully delete a book by id")
     })
     @DeleteMapping("/books/{id}")
-    public void deleteBook(@ApiParam("book id") @PathVariable int id) throws NotFoundException {
+    public void deleteBook(@ApiParam("book id") @PathVariable int id) throws CustomNotFoundException {
 
         Optional<Book> book = bookRepo.findById(id);
         if (!book.isPresent())
-            throw new NotFoundException("Book id " + id + " is not existed.");
+            throw new CustomNotFoundException("Book id " + id + " is not existed.");
 
         bookRepo.deleteById(id);
     }

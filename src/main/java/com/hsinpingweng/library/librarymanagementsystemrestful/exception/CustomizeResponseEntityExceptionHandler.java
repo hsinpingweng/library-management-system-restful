@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolation;
@@ -25,6 +26,13 @@ import java.util.List;
 public class CustomizeResponseEntityExceptionHandler 
 	extends ResponseEntityExceptionHandler{
 
+
+	@ExceptionHandler(CustomNotFoundException.class)
+	public final ResponseEntity<Object> handleUserNotFoundException(CustomNotFoundException ex, WebRequest request)  {
+		ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+
+		return new ResponseEntity(exceptionResponse, exceptionResponse.getStatus());
+	}
 
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -42,8 +50,19 @@ public class CustomizeResponseEntityExceptionHandler
 
 		ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST, errors);
 
-		return new ResponseEntity<>(exceptionResponse, headers, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(exceptionResponse, headers, exceptionResponse.getStatus());
 	}
+
+
+	@Override
+	protected ResponseEntity<Object> handleNoHandlerFoundException(
+			NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+		String error = "No handler found for " + ex.getHttpMethod() + " " + ex.getRequestURL();
+
+		ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.NOT_FOUND, error);
+		return new ResponseEntity<Object>(exceptionResponse, new HttpHeaders(), exceptionResponse.getStatus());
+	}
+
 
 
 	@Override
@@ -82,5 +101,6 @@ public class CustomizeResponseEntityExceptionHandler
 		ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST, error);
 		return new ResponseEntity<>(exceptionResponse, new HttpHeaders(), exceptionResponse.getStatus());
 	}
+
 
 }

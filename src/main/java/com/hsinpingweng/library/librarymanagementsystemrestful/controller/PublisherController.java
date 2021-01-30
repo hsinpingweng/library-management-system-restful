@@ -2,12 +2,12 @@ package com.hsinpingweng.library.librarymanagementsystemrestful.controller;
 
 import com.hsinpingweng.library.librarymanagementsystemrestful.entity.Book;
 import com.hsinpingweng.library.librarymanagementsystemrestful.entity.Publisher;
+import com.hsinpingweng.library.librarymanagementsystemrestful.exception.CustomNotFoundException;
 import com.hsinpingweng.library.librarymanagementsystemrestful.repository.PublisherRepository;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,10 +42,10 @@ public class PublisherController {
             @ApiResponse(responseCode="404", description="Publisher id is not existed")
     })
     @GetMapping("/publishers/{id}")
-    public Publisher retrievePublisher (@ApiParam("Publisher id") @PathVariable int id) throws NotFoundException {
+    public Publisher retrievePublisher (@ApiParam("Publisher id") @PathVariable int id) throws CustomNotFoundException {
         Optional<Publisher> publisher = publisherRepo.findById(id);
         if (!publisher.isPresent())
-            throw new NotFoundException("Publisher id " + id + " is not existed.");
+            throw new CustomNotFoundException("Publisher id " + id + " is not existed.");
 
         return publisher.get();
     }
@@ -57,10 +57,10 @@ public class PublisherController {
             @ApiResponse(responseCode="404", description="Publisher id is not existed")
     })
     @GetMapping("/publishers/{id}/books")
-    public Set<Book> retrieveBooksByPublisher (@ApiParam("Publisher id") @PathVariable int id) throws NotFoundException {
+    public Set<Book> retrieveBooksByPublisher (@ApiParam("Publisher id") @PathVariable int id) throws CustomNotFoundException {
         Optional<Publisher> publisher = publisherRepo.findById(id);
         if (!publisher.isPresent())
-            throw new NotFoundException("Publisher id " + id + " is not existed.");
+            throw new CustomNotFoundException("Publisher id " + id + " is not existed.");
 
         return publisher.get().getBooks();
     }
@@ -72,10 +72,10 @@ public class PublisherController {
     })
     @PutMapping("/publishers/{id}")
     public ResponseEntity<Object> updatePublisher(@ApiParam("Publisher id") @PathVariable int id,
-                                                  @Valid @RequestBody Publisher publisher) throws NotFoundException {
+                                                  @Valid @RequestBody Publisher publisher) throws CustomNotFoundException {
         Optional<Publisher> publisherOpt = publisherRepo.findById(id);
         if (!publisherOpt.isPresent())
-            throw new NotFoundException("Publisher id " + id + " is not existed.");
+            throw new CustomNotFoundException("Publisher id " + id + " is not existed.");
 
         publisher.setId(id);
         Publisher savedPublisher = publisherRepo.save(publisher);
@@ -112,11 +112,11 @@ public class PublisherController {
             @ApiResponse(responseCode="200", description="Successfully delete a publisher by id")
     })
     @DeleteMapping("/publishers/{id}")
-    public void deletePublisher(@ApiParam("Publisher id") @PathVariable int id) throws NotFoundException {
+    public void deletePublisher(@ApiParam("Publisher id") @PathVariable int id) throws CustomNotFoundException {
 
         Optional<Publisher> publisherOpt = publisherRepo.findById(id);
         if (!publisherOpt.isPresent())
-            throw new NotFoundException("Publisher id " + id + " is not existed.");
+            throw new CustomNotFoundException("Publisher id " + id + " is not existed.");
 
         //TODO - handle constraint violation exception
         publisherRepo.deleteById(id);

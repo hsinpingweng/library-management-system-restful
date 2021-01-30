@@ -2,15 +2,14 @@ package com.hsinpingweng.library.librarymanagementsystemrestful.controller;
 
 import com.hsinpingweng.library.librarymanagementsystemrestful.entity.Author;
 import com.hsinpingweng.library.librarymanagementsystemrestful.entity.Book;
+import com.hsinpingweng.library.librarymanagementsystemrestful.exception.CustomNotFoundException;
 import com.hsinpingweng.library.librarymanagementsystemrestful.repository.AuthorRepository;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -43,10 +42,10 @@ public class AuthorController {
             @ApiResponse(responseCode="404", description="Author id is not existed")
     })
     @GetMapping("/authors/{id}")
-    public Author retrieveAuthor(@ApiParam("Author id") @PathVariable int id) throws NotFoundException {
+    public Author retrieveAuthor(@ApiParam("Author id") @PathVariable int id) throws CustomNotFoundException {
         Optional<Author> author = authorRepo.findById(id);
         if (!author.isPresent())
-            throw new NotFoundException("Author id " + id + " is not existed.");
+            throw new CustomNotFoundException("Author id " + id + " is not existed.");
 
         return author.get();
     }
@@ -58,12 +57,12 @@ public class AuthorController {
             @ApiResponse(responseCode="404", description="Author id is not existed")
     })
     @GetMapping("/authors/{id}/books")
-    public Set<Book> retrieveBooksByAuthor(@ApiParam("Author id") @PathVariable int id) throws NotFoundException {
+    public Set<Book> retrieveBooksByAuthor(@ApiParam("Author id") @PathVariable int id) throws CustomNotFoundException {
         Optional<Author> author = authorRepo.findById(id);
         if (!author.isPresent())
-            throw new NotFoundException("Author id " + id + " is not existed.");
+            throw new CustomNotFoundException("Author id " + id + " is not existed.");
 
-        return author.get().getBooks();
+        return authorRepo.findById(id).get().getBooks();
     }
 
 
@@ -89,10 +88,10 @@ public class AuthorController {
             @ApiResponse(responseCode="201", description="Successfully update a author information")
     })
     @PutMapping("/authors/{id}")
-    public ResponseEntity<Object> updateCategory(@PathVariable int id, @Valid @RequestBody Author author) throws NotFoundException {
+    public ResponseEntity<Object> updateCategory(@PathVariable int id, @Valid @RequestBody Author author) throws CustomNotFoundException {
         Optional<Author> authorOpt = authorRepo.findById(id);
         if (!authorOpt.isPresent())
-            throw new NotFoundException("Author id " + id + " is not existed.");
+            throw new CustomNotFoundException("Author id " + id + " is not existed.");
 
         author.setId(id);
         Author savedAuthor = authorRepo.save(author);
@@ -111,11 +110,11 @@ public class AuthorController {
             @ApiResponse(responseCode="200", description="Successfully delete a author by id")
     })
     @DeleteMapping("/authors/{id}")
-    public void deleteAuthor(@PathVariable int id) throws NotFoundException, MethodArgumentNotValidException {
+    public void deleteAuthor(@PathVariable int id) throws CustomNotFoundException {
 
         Optional<Author> authorOpt = authorRepo.findById(id);
         if (!authorOpt.isPresent())
-            throw new NotFoundException("Author id " + id + " is not existed.");
+            throw new CustomNotFoundException("Author id " + id + " is not existed.");
 
 
         //TODO - handle constraint violation exception
