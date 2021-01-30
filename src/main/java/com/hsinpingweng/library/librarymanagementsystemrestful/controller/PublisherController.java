@@ -106,7 +106,7 @@ public class PublisherController {
     }
 
 
-    
+
     @ApiOperation(value="Delete a publisher")
     @ApiResponses({
             @ApiResponse(responseCode="200", description="Successfully delete a publisher by id")
