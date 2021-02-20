@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service("bookService")
-public class BoolServiceImpl implements BookService {
+public class BookServiceImpl implements BookService {
 
 
     @Autowired
